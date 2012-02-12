@@ -108,11 +108,20 @@ $data->groupmembersonly = 0;
 $data->id = '';
 $data->files = false;
 
+$data->printheading = false; // Added to avoid any warnings due to not setting them
+$data->printintro = false;
+$data->popupwidth = 620;  // Default values from mod/resource/lib.php
+$data->popupheight = 450;
+
 // Create the course module
 $data->coursemodule = add_course_module($data);
 
 unset($data->id);
-$data->display = RESOURCELIB_DISPLAY_AUTO;
+
+$data->display = get_config('resource', 'display');
+if ($data->display === false) {
+    $data->display = RESOURCELIB_DISPLAY_AUTO;
+}
 
 if ($type == 'Files') {
     // Create the relevant file
@@ -124,7 +133,8 @@ if ($type == 'Files') {
                       'filearea' => 'content',
                       'itemid' => 0,
                       'filepath' => '/',
-                      'filename' => $filename
+                      'filename' => $filename,
+                      'userid' => $USER->id
                       );
     $fs->create_file_from_pathname($fileinfo, $filesrc);
 
